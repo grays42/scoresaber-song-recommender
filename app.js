@@ -25,15 +25,16 @@ async function fetchAllScores(playerId, stopFetchingAtZeroPP) {
         console.log(`Fetching page ${page}...`)
         const data = await fetchData(`https://scoresaber.com/api/player/${playerId}/scores?sort=top&page=${page}`);
 
-        if (data.playerScores.length == 0 || (stopFetchingAtZeroPP && data.playerScores[data.playerScores.length - 1].score.pp == 0)) {
-            done = true;
-        } else {
-            scores = [...scores, ...data.playerScores];
-            page += 1;
+        if (stopFetchingAtZeroPP) {
+            data.playerScores = data.playerScores.filter(score => score.score.pp > 0);
+        }
+
+        scores = [...scores, ...data.playerScores];
+        page += 1;
+        if (data.playerScores.length == 0) {
+            return scores;
         }
     }
-
-    return scores
 }
 
 // Given a number of players to find ahead of the player and their rank, get their user IDs
@@ -64,7 +65,7 @@ async function init() {
     const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
 
     logMessage("Fetching player details...", 'log')
-    
+
 
     const basicPlayerData = await fetchData(`https://scoresaber.com/api/player/${userId}/basic`)
     console.log(basicPlayerData)
@@ -80,19 +81,17 @@ async function init() {
 
     let allCompetitorScores = [];
 
-    logMessage(`Fetching scores for competitors (only songs with ranked weight)...`, 'log');
+    logMessage(`Fetching scores for competitors...`, 'log');
     for (let i = 0; i < competitorsAheadData.length; i++) {
         const competitorId = competitorsAheadData[i].id;
         const competitorName = competitorsAheadData[i].name;
 
         const competitorScores = await fetchAllScores(competitorId, true);
 
-        competitorScores
-            .filter(competitorScore => competitorScore.score.pp > 0) // Filter out scores with pp equal to 0
-            .forEach(competitorScore => {
-                competitorScore.competitorID = competitorId;
-                competitorScore.competitorName = competitorName;
-            });
+        competitorScores.forEach(competitorScore => {
+            competitorScore.competitorID = competitorId;
+            competitorScore.competitorName = competitorName;
+        });
 
         console.log(competitorScores)
         logMessage(`${competitorName}: ${competitorScores.length} scores retrieved.`, 'data')
@@ -104,7 +103,7 @@ async function init() {
     console.log("allCompetitorScores:")
     console.log(allCompetitorScores)
 
-    logMessage(`Fetching your scores (takes longer because we're grabbing every song you've ever submitted rank data on)...`, 'log')
+    logMessage(`Fetching your scores...`, 'log')
     let playerScores = await fetchAllScores(userId, true)
     console.log(playerScores)
 
