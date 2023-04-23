@@ -21,15 +21,23 @@ async function fetchData(url) {
     try
     {
         const useCorsAnywhere = useCorsRedirect();
-        const headers = useCorsAnywhere ? { 'X-Requested-With': 'XMLHttpRequest','Access-Control-Allow-Origin' : '*'} : {'Access-Control-Allow-Origin' : '*'};
-        const origin = useCorsAnywhere ? 'https://grays42.github.io' : undefined;
-        const response = await fetch(url, { headers, mode: 'cors', origin });
+        const headers = {
+            //'Access-Control-Allow-Headers': 'access-control-allow-origin',
+            //'Access-Control-Allow-Methods': '*',
+            //'Access-Control-Allow-Origin': '*',
+            //'Access-Control-Request-Headers': 'access-control-allow-origin',
+            //'Allow': 'GET, PUT, POST, DELETE, HEAD, OPTIONS, PATCH, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK'
+        }
+        //const origin = useCorsAnywhere ? 'https://grays42.github.io' : undefined;
+        const response = await fetch(url, { headers, mode: 'cors'});
         const data = await response.json();
         return data;
     }
-    catch
+    catch(error)
     {
-        logMessage()
+        logMessage("CORS error: " + error + ".")
+        logMessage("The ScoreSaber API has a requirement that cannot be bypassed with javascript code (that I've been able to find), but the CORS Unblock chrome extension works great. Install CORS Unblock, enable it for this site, and run again.")
+        throw error
     }
   }
 
