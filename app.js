@@ -23,7 +23,7 @@ async function fetchData(url) {
         const useCorsAnywhere = useCorsRedirect();
         if(useCorsAnywhere)
         { 
-            url = "https://proxy.cors.sh/" + url
+            url = "https://corsproxy.io/?" + url
             const response = await fetch(url);
             const data = await response.json();
             return data;
