@@ -18,13 +18,13 @@ function logMessage(message, type) {
 }
 
 async function fetchData(url) {
-    if (useCorsRedirect()) { url = "https://cors-anywhere.herokuapp.com/" + url }
-    const response = await fetch(url)
-    //console.log(response)
+    const useCorsAnywhere = useCorsRedirect();
+    const headers = useCorsAnywhere ? { 'X-Requested-With': 'XMLHttpRequest' } : {};
+    const origin = useCorsAnywhere ? 'https://grasy42.github.io' : undefined;
+    const response = await fetch(url, { headers, mode: 'cors', origin });
     const data = await response.json();
-
     return data;
-}
+  }
 
 async function fetchAllScores(playerId, stopFetchingAtZeroPP) {
     let scores = [];
