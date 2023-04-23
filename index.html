@@ -14,8 +14,9 @@
       <label for="competitorsAhead">Number of Competitors Ahead (these lookups take a lot of time, do not go crazy here):</label>
       <input type="number" id="competitorsAhead" name="competitorsAhead" min="1" max="20" value="10">
       <br><br>
-      <label for="useCorsRedirect">Use CORS Redirect. This will attempt to automatically bypass a restriction on the ScoreSaber API that is extremely problematic for pulling data, but it is very rate-limited. An alternative is to uncheck this box and use the Chrome addon "CORS Unblock", but doing so may be considered unsafe.</label>
       <input type="checkbox" id="useCorsRedirect" name="useCorsRedirect" checked>
+      <label for="useCorsRedirect">Use CORS Proxy (keep checked by default). </label>
+      <br><small><small>If someday you're still using this script and it starts throwing CORS errors, it's because of a thing that I need a third party service to fix, but an alternative is to uncheck this box and install the Chrome addon "CORS Unblock" and enable for this site, as a workaround until I fix it.</small>
       <br><br>
       <input type="submit" value="Submit">
     </form>
