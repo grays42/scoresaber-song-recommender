@@ -12,11 +12,8 @@ async function fetchData(url, doCorsAnywhereInsert) {
         url = "https://cors-anywhere.herokuapp.com/" + url;
     }
 
-    const response = await fetch(url, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    });
+    const response = await fetch(url);
+    console.log(response)
     const data = await response.json();
 
     return data;
@@ -69,13 +66,6 @@ async function init() {
     const userId = urlParams.get('playerId');
     const doCorsAnywhereInsert = Boolean(urlParams.get('doCorsAnywhereInsert'));
     const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
-
-    logMessage("fetch test...")
-
-    const response = await fetch(`https://scoresaber.com/api/player/${playerId}/basic`)
-    console.log(response)
-    const data = await response.json();
-    console.log(data)
 
     logMessage("Fetching player details...", 'log')
     
