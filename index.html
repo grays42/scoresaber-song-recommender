@@ -2,14 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ScoreSaber Song Recommender</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <h1>ScoreSaber Song Recommender</h1>
+    <p>Enter your ScoreSaber ID below:</p>
     <form id="scoreSaberForm">
-      <label for="scoreSaberId">Enter your ScoreSaber ID:</label>
-      <input type="text" id="scoreSaberId" name="scoreSaberId"><br><br>
-      <input type="submit" value="Submit">
+      <input type="text" id="userId" name="userId" placeholder="Enter your ScoreSaber ID">
+      <button type="submit">Submit</button>
     </form>
+    <div id="resultContainer" style="display: none;">
+      <h2>Recommendations:</h2>
+      <ul id="recommendations"></ul>
+    </div>
+    <script src="app.js"></script>
   </body>
 </html>
