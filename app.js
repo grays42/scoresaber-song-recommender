@@ -7,31 +7,23 @@ function logMessage(message, type) {
     console.log(message)
 }
 
-async function fetchData(url, doCorsAnywhereInsert) {
-    if (doCorsAnywhereInsert) {
-        url = "https://cors-anywhere.herokuapp.com/" + url;
-    }
+async function fetchData(url) {
 
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'origin': 'https://github.io'
-        }
-    });
-    console.log(response)
+    const response = await fetch("https://cors-anywhere.herokuapp.com/" + url)
+    //console.log(response)
     const data = await response.json();
 
     return data;
 }
 
-async function fetchAllScores(playerId, stopFetchingAtZeroPP, doCorsAnywhereInsert) {
+async function fetchAllScores(playerId, stopFetchingAtZeroPP) {
     let scores = [];
     let page = 1;
     let done = false;
 
     while (!done) {
         console.log(`Fetching page ${page}...`)
-        const data = await fetchData(`https://scoresaber.com/api/player/${playerId}/scores?sort=top&page=${page}`, doCorsAnywhereInsert);
+        const data = await fetchData(`https://scoresaber.com/api/player/${playerId}/scores?sort=top&page=${page}`);
 
         if (data.playerScores.length == 0 || (stopFetchingAtZeroPP && data.playerScores[data.playerScores.length - 1].score.pp == 0)) {
             done = true;
@@ -45,12 +37,12 @@ async function fetchAllScores(playerId, stopFetchingAtZeroPP, doCorsAnywhereInse
 }
 
 // Given a number of players to find ahead of the player and their rank, get their user IDs
-async function getUsersAhead(numPlayersAhead, rank, doCorsAnywhereInsert) {
+async function getUsersAhead(numPlayersAhead, rank) {
 
     const page = Math.ceil(rank / 50);
     const nextPage = page - 1;
-    const response = await fetchData(`https://scoresaber.com/api/players?page=${page}`, doCorsAnywhereInsert);
-    const nextResponse = nextPage >= 0 ? await fetchData(`https://scoresaber.com/api/players?page=${nextPage}`, doCorsAnywhereInsert) : null;
+    const response = await fetchData(`https://scoresaber.com/api/players?page=${page}`);
+    const nextResponse = nextPage >= 0 ? await fetchData(`https://scoresaber.com/api/players?page=${nextPage}`) : null;
     const players = nextPage >= 0 ? [...response.players, ...nextResponse.players] : response.players;
     const filteredPlayers = players.filter(player => player.rank >= rank - numPlayersAhead && player.rank < rank).slice(0, numPlayersAhead);
     const returnVals = filteredPlayers
@@ -69,13 +61,12 @@ async function init() {
     // Get user ID from URL query parameter
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('playerId');
-    const doCorsAnywhereInsert = Boolean(urlParams.get('doCorsAnywhereInsert'));
     const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
 
     logMessage("Fetching player details...", 'log')
     
 
-    const basicPlayerData = await fetchData(`https://scoresaber.com/api/player/${userId}/basic`, doCorsAnywhereInsert)
+    const basicPlayerData = await fetchData(`https://scoresaber.com/api/player/${userId}/basic`)
     console.log(basicPlayerData)
 
     logMessage(`Player: ${basicPlayerData.name}`, 'data');
@@ -83,7 +74,7 @@ async function init() {
 
 
     logMessage(`Fetching ${competitorsAhead} competitors ahead of the player on the global rankings...`, 'log');
-    competitorsAheadData = await getUsersAhead(competitorsAhead, basicPlayerData.rank, doCorsAnywhereInsert)
+    competitorsAheadData = await getUsersAhead(competitorsAhead, basicPlayerData.rank)
     console.log(competitorsAheadData)
     competitorsAheadData.forEach(player => logMessage(`#${player.rank}: ${player.name}`, 'data'));
 
@@ -94,7 +85,7 @@ async function init() {
         const competitorId = competitorsAheadData[i].id;
         const competitorName = competitorsAheadData[i].name;
 
-        const competitorScores = await fetchAllScores(competitorId, true, doCorsAnywhereInsert);
+        const competitorScores = await fetchAllScores(competitorId, true);
 
         competitorScores
             .filter(competitorScore => competitorScore.score.pp > 0) // Filter out scores with pp equal to 0
@@ -103,6 +94,7 @@ async function init() {
                 competitorScore.competitorName = competitorName;
             });
 
+        console.log(competitorScores)
         logMessage(`${competitorName}: ${competitorScores.length} scores retrieved.`, 'data')
 
         allCompetitorScores = [...allCompetitorScores, ...competitorScores];
@@ -113,7 +105,7 @@ async function init() {
     console.log(allCompetitorScores)
 
     logMessage(`Fetching your scores (takes longer because we're grabbing every song you've ever submitted rank data on)...`, 'log')
-    let playerScores = await fetchAllScores(userId, true, doCorsAnywhereInsert)
+    let playerScores = await fetchAllScores(userId, true)
     console.log(playerScores)
 
     // Summarize top 10 scores
