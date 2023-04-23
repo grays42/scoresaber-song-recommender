@@ -23,7 +23,7 @@ async function fetchData(url) {
         const useCorsAnywhere = useCorsRedirect();
         if(useCorsAnywhere)
         { 
-            url = "https://cors-anywhere.herokuapp.com/" + url
+            url = "https://proxy.cors.sh/" + url
             const response = await fetch(url);
             const data = await response.json();
             return data;
