@@ -70,7 +70,15 @@ async function init() {
     const doCorsAnywhereInsert = Boolean(urlParams.get('doCorsAnywhereInsert'));
     const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
 
+    logMessage("fetch test...")
+
+    const response = await fetch(`https://scoresaber.com/api/player/${playerId}/basic`)
+    console.log(response)
+    const data = await response.json();
+    console.log(data)
+
     logMessage("Fetching player details...", 'log')
+    
 
     const basicPlayerData = await fetchData(`https://scoresaber.com/api/player/${userId}/basic`, doCorsAnywhereInsert)
     console.log(basicPlayerData)
