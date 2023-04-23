@@ -1,3 +1,13 @@
+
+// Get user ID from URL query parameter
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get('playerId');
+const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
+const useCorsRedirect_val = Boolean(urlParams.get('useCorsRedirect'))
+
+function useCorsRedirect() { return useCorsRedirect_val }
+
+
 const messagesDiv = document.getElementById('messages');
 // Log a message to the browser console and append it to the messages div
 function logMessage(message, type) {
@@ -8,7 +18,7 @@ function logMessage(message, type) {
 }
 
 async function fetchData(url) {
-//    url = "https://cors-anywhere.herokuapp.com/" + url
+    if (useCorsRedirect()) { url = "https://cors-anywhere.herokuapp.com/" + url }
     const response = await fetch(url)
     //console.log(response)
     const data = await response.json();
@@ -23,7 +33,7 @@ async function fetchAllScores(playerId, stopFetchingAtZeroPP) {
 
     while (!done) {
         console.log(`Fetching page ${page}...`)
-        const data = await fetchData(`https://scoresaber.com/api/player/${playerId}/scores?sort=top&page=${page}`);
+        const data = await fetchData(`https://scoresaber.com/api/player/${playerId}/scores?sort=top&limit=50&page=${page}`);
 
         if (stopFetchingAtZeroPP) {
             data.playerScores = data.playerScores.filter(score => score.score.pp > 0);
@@ -59,10 +69,6 @@ async function getUsersAhead(numPlayersAhead, rank) {
 }
 
 async function init() {
-    // Get user ID from URL query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('playerId');
-    const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
 
     logMessage("Fetching player details...", 'log')
 
@@ -144,9 +150,7 @@ async function init() {
         if (isPlayerScore && competitorScore.score && competitorScore.score.baseScore < playerScores.find(playerScore => playerScore.leaderboard.songHash === leaderboard.songHash).score.baseScore) {
             return false;
         }
-        const songStars = leaderboard.stars;
-        //console.log(`Stars: ${leaderboard.stars}, valid: ${songStars <= comfortZoneMax}`)
-        return (songStars <= comfortZoneMax);
+        return true;
     });
 
     logMessage(`Filtered scores based on comfort zone and player scores: ${filteredScores.length}`, 'log');
@@ -170,37 +174,42 @@ async function init() {
     // Sort recommended songs by descending pp
     recommendedSongs.sort((song1, song2) => song2.pp - song1.pp);
 
-    // Generate HTML table for recommended songs
-    let tableHtml = `<table>
-                    <tr>
-                        <th>Song Name</th>
-                        <th>Artist</th>
-                        <th>Mapper</th>
-                        <th>Difficulty</th>
-                        <th>Stars</th>
-                        <th>PP</th>
-                        <th>Competitor</th>
-                    </tr>`;
+    // Get references to DOM elements
+    const slider = document.getElementById('star-rating-slider');
+    const tableBody = document.getElementById('recommended-songs-tbody');
+    document.getElementById('slider-container').removeAttribute('style');
+    document.getElementById('resultContainer').removeAttribute('style');
 
-    for (let i = 0; i < recommendedSongs.length && i < 10; i++) {
-        const song = recommendedSongs[i];
-        const rowHtml = `<tr>
-                        <td>${song.songName}</td>
-                        <td>${song.songArtist}</td>
-                        <td>${song.mapper}</td>
-                        <td>${song.difficulty}</td>
-                        <td>${song.starRating}</td>
-                        <td>${song.pp.toFixed(2)}</td>
-                        <td>${song.ppPlayerName}</td>
-                     </tr>`;
-        tableHtml += rowHtml;
+    // Add event listener to slider
+    slider.addEventListener('change', () => {
+        const sliderValue = parseInt(slider.value);
+        const filteredSongs = recommendedSongs.filter(song => song.starRating <= sliderValue);
+        updateTable(filteredSongs);
+    });
+
+    // Function to update the table with new data
+    function updateTable(songs) {
+        let tableHtml = '';
+
+        for (let i = 0; i < songs.length && i < 10; i++) {
+            const song = songs[i];
+            const rowHtml = `<tr>
+                      <td>${song.songName}</td>
+                      <td>${song.songArtist}</td>
+                      <td>${song.mapper}</td>
+                      <td>${song.difficulty}</td>
+                      <td>${song.starRating}</td>
+                      <td>${song.pp.toFixed(2)}</td>
+                      <td>${song.ppPlayerName}</td>
+                    </tr>`;
+            tableHtml += rowHtml;
+        }
+
+        tableBody.innerHTML = tableHtml;
     }
 
-    tableHtml += "</table>";
-
-    // Append table to messages div
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.innerHTML += tableHtml;
+    // Call the updateTable function initially to show all recommended songs
+    updateTable(recommendedSongs);
 
 };
 

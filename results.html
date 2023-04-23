@@ -9,6 +9,28 @@
   <body>
     <h1>ScoreSaber Song Recommender</h1>
     <div id="messages"></div>
+    <div id="slider-container" style="display: none;">
+      <label for="star-rating-slider">Filter by star rating:</label>
+      <input type="range" id="star-rating-slider" name="star-rating" min="0" max="15">
+    </div>
+    <div id="resultContainer" style="display: none;">
+      <h2>Recommendations:</h2>
+      <table id="recommended-songs-table">
+        <thead>
+          <tr>
+            <th>Song Name</th>
+            <th>Artist</th>
+            <th>Mapper</th>
+            <th>Difficulty</th>
+            <th>Stars</th>
+            <th>PP</th>
+            <th>Competitor</th>
+          </tr>
+        </thead>
+        <tbody id="recommended-songs-tbody">
+        </tbody>
+      </table>
+    </div>
     <script src="app.js"></script>
   </body>
 </html>
