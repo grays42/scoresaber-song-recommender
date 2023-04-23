@@ -21,4 +21,4 @@ form.addEventListener('submit', async (event) => {
 
   logMessage(`Player: ${data.name}`)
   logMessage(`Rank: ${data.rank}`)
-
+}
