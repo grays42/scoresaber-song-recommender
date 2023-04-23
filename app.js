@@ -3,7 +3,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('playerId');
 const competitorsAhead = parseInt(urlParams.get('competitorsAhead') || 10); // Default to 10 if not specified
-const useCorsRedirect_val = Boolean(urlParams.get('useCorsRedirect'))
+const useCorsRedirect_val = urlParams.get('useCorsRedirect') == "on";
 
 function useCorsRedirect() { return useCorsRedirect_val }
 
