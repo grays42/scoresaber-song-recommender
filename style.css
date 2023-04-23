@@ -2,7 +2,7 @@ body {
     background-color: #1a1a1a;
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 24px;
+    font-size: 18px;
     line-height: 1.5;
   }
   
@@ -10,4 +10,50 @@ body {
     margin: 0 auto;
     max-width: 800px;
     text-align: center;
+  }
+  
+  .log-message {
+    color: #999;
+    font-family: Courier, monospace;
+  }
+  
+  .data-response {
+    color: #ccc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 20px;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+  
+  table th, table td {
+    padding: 12px;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #1f1f1f;
+    color: #fff;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #2b2b2b;
+  }
+  
+  table tr:hover {
+    background-color: #1f1f1f;
+  }
+  
+  table td a {
+    color: #5bc0de;
   }

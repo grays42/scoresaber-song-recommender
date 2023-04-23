@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
     <title>ScoreSaber Song Recommender</title>
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <h1>ScoreSaber Song Recommender</h1>
-    <p>Enter your ScoreSaber ID below:</p>
-    <form id="scoreSaberForm">
-      <input type="text" id="userId" name="userId" placeholder="Enter your ScoreSaber ID">
-      <button type="submit">Submit</button>
+    <form action="results.html" method="get">
+      <label for="playerId">Player ID:</label>
+      <input type="text" id="playerId" name="playerId" value="76561198027304073">
+      <br>
+      <label for="competitorsAhead">Number of Competitors Ahead (these lookups take a lot of time, do not go crazy here):</label>
+      <input type="number" id="competitorsAhead" name="competitorsAhead" min="1" max="20" value="10">
+      <br><br>
+      <input type="submit" value="Submit">
     </form>
-    <div id="resultContainer" style="display: none;">
-      <h2>Recommendations:</h2>
-      <ul id="recommendations"></ul>
-    </div>
-    <script src="app.js"></script>
   </body>
 </html>
