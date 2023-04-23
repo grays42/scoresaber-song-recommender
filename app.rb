@@ -9,6 +9,7 @@ get '/' do
   erb :index
 end
 
-post '/' do
-
-end
+post '/submit' do
+    user_id = params[:user_id]
+    "You submitted the user ID: #{user_id}"
+  end
