@@ -8,8 +8,8 @@ function logMessage(message, type) {
 }
 
 async function fetchData(url) {
-
-    const response = await fetch("https://cors-anywhere.herokuapp.com/" + url)
+//    url = "https://cors-anywhere.herokuapp.com/" + url
+    const response = await fetch(url)
     //console.log(response)
     const data = await response.json();
 
