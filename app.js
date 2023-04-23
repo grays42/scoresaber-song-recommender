@@ -16,9 +16,9 @@ form.addEventListener('submit', async (event) => {
   //Fetch player rank
   logMessage("Fetching player details...")
 
-  const basic_response = await fetch(`https://scoresaber.com/api/player/${userId}/basic`)
+  const basic_response = await fetch(`https://scoresaber.com/api/player/${userId}/basic`);
   const basic_data = await basic_response.json();
 
-  logMessage(`Player: ${data.name}`)
-  logMessage(`Rank: ${data.rank}`)
-}
+  logMessage(`Player: ${data.name}`);
+  logMessage(`Rank: ${data.rank}`);
+});
