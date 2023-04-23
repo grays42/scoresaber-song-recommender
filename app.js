@@ -12,7 +12,12 @@ async function fetchData(url, doCorsAnywhereInsert) {
         url = "https://cors-anywhere.herokuapp.com/" + url;
     }
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'origin': 'https://github.io'
+        }
+    });
     console.log(response)
     const data = await response.json();
 
