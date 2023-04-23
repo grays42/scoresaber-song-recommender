@@ -18,12 +18,19 @@ function logMessage(message, type) {
 }
 
 async function fetchData(url) {
-    const useCorsAnywhere = useCorsRedirect();
-    const headers = useCorsAnywhere ? { 'X-Requested-With': 'XMLHttpRequest' } : {};
-    const origin = useCorsAnywhere ? 'https://grasy42.github.io' : undefined;
-    const response = await fetch(url, { headers, mode: 'cors', origin });
-    const data = await response.json();
-    return data;
+    try
+    {
+        const useCorsAnywhere = useCorsRedirect();
+        const headers = useCorsAnywhere ? { 'X-Requested-With': 'XMLHttpRequest','Access-Control-Allow-Origin' : '*'} : {'Access-Control-Allow-Origin' : '*'};
+        const origin = useCorsAnywhere ? 'https://grays42.github.io' : undefined;
+        const response = await fetch(url, { headers, mode: 'cors', origin });
+        const data = await response.json();
+        return data;
+    }
+    catch
+    {
+        logMessage()
+    }
   }
 
 async function fetchAllScores(playerId, stopFetchingAtZeroPP) {
